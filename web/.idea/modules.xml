@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/J-BLOG.iml" filepath="$PROJECT_DIR$/J-BLOG.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jblog/jblog.iml" filepath="$PROJECT_DIR$/jblog/jblog.iml" />
+    </modules>
+  </component>
+</project>
