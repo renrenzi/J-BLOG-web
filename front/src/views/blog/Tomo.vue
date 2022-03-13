@@ -6,23 +6,30 @@
       </el-header>
       <el-main style="margin-top: 300px;margin-left: 150px;width: 500px">
         <h1>友链</h1>
-        <el-row v-for="link in linkList" v-if="link.linkType === 0">
-          <el-link :href="link.linkUrl" target="_blank">{{link.linkName}}</el-link> -{{link.linkDescription}}
-        </el-row>
-        <el-row >
-          <h1>推荐</h1>
-          <el-row v-for="link in linkList" v-if="link.linkType === 1">
+        <el-card>
+          <el-row v-for="link in linkList" v-if="link.linkType === 0">
             <el-link :href="link.linkUrl" target="_blank">{{link.linkName}}</el-link> -{{link.linkDescription}}
           </el-row>
+        </el-card>
+        <el-row >
+          <h1>推荐</h1>
+          <el-card>
+            <el-row v-for="link in linkList" v-if="link.linkType === 1">
+              <el-link :href="link.linkUrl" target="_blank">{{link.linkName}}</el-link> -{{link.linkDescription}}
+            </el-row>
+          </el-card>
         </el-row>
         <el-row :gutter="8">
         </el-row>
         <el-row>
           <h1>个人网站</h1>
         </el-row>
-        <el-row v-for="link in linkList" v-if="link.linkType === 2">
-          <el-link :href="link.linkUrl" target="_blank">{{link.linkName}}</el-link> -{{link.linkDescription}}
-        </el-row>
+        <el-card>
+          <el-row v-for="link in linkList" v-if="link.linkType === 2">
+            <el-link :href="link.linkUrl" target="_blank">{{link.linkName}}</el-link> -{{link.linkDescription}}
+          </el-row>
+        </el-card>
+
         <el-row>
           <h1>链接须知</h1>
         </el-row>
@@ -30,8 +37,8 @@
           欢迎互换友链 ^_^ 不过请确定贵站可以正常运营.
           我的邮箱是 486084544@qq.com ,<br>
           格式要求如下:<br>
-          网站名称：haise<br>
-          网站链接：http://baidu.com<br>
+          网站名称：JBolg<br>
+          网站链接：http://120.39.217.37:2233/<br>
           网站描述：百度的个人博客<br>
           请保证自己的链接长期有效,不然可能会被清理.
         </el-row>
@@ -73,5 +80,8 @@ export default {
 }
 </script>
 <style>
+  .image{
+    width: 200px;
 
+  }
 </style>
