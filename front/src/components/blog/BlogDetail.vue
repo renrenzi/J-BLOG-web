@@ -5,12 +5,17 @@
         <el-col :span="8">
           <el-page-header @back="goBack" :content="blogInfo.blogTitle">
           </el-page-header>
+            
         </el-col>
         <el-col :span="4" :pull="3">
           <el-divider direction="vertical"></el-divider>
           <el-link @click="getBlogByTag(blogInfo.blogCategoryName)">{{blogInfo.blogCategoryName}}</el-link>
         </el-col>
+        <el-col :span="12" > 
+          <i class="el-icon-view">{{blogInfo.blogViews}}</i>
+        </el-col>
       </el-row>
+      
     </el-header>
     <el-main >
       <el-container>
@@ -49,7 +54,7 @@
           </el-row>
           <el-row v-if="blogInfo.blogId !== 33">
             <el-col :push="22" :span="2">
-              <el-button type="primary">评论</el-button>
+              <el-button type="primary" @click="create()">评论</el-button>
             </el-col>
           </el-row>
           <el-row v-if="blogInfo.blogId !== 33">
@@ -88,7 +93,7 @@
                 <span>{{comment.replyBody}}</span>
               </el-col>
               <el-col :span="4" :push="18">
-                <span>{{comment.replyCreateTime | moment}}</span>
+                <!-- <span>{{comment.replyCreateTime | moment}}</span> -->
               </el-col>
             </el-row>
             <el-row>
@@ -112,6 +117,7 @@ import BlogComment from "./BlogComment";
 import comment from 'bright-comment'
 import {pageComment} from "@/api/blogmanager/blogComment";
 import {blogDetail} from "@/api/front/blogView";
+import { createComment } from '../../api/blogmanager/blogComment';
 export default {
   name: "BlogDetail",
   components: {
@@ -130,7 +136,36 @@ export default {
     this.getBlogInfo();
   },
   methods:{
-
+    create(){
+      const _this = this;
+      createComment(qs.stringify({
+        blogId: this.blogInfo.blogId,
+        commentBody: this.textarea
+      })).then(res => {
+          if(res.code == 2000){
+             _this.$message({
+              showClose: true,
+              message: '评论成功',
+              type: 'success'
+            });
+            pageComment(qs.stringify({
+          pageNum: 1,
+          pageSize: 5,
+          blogId: _this.$route.query.blogId
+      })).then(res => {
+          _this.commentList = res.data;
+      })
+          }else if(res.code == 5002){
+              _this.$message({
+              showClose: true,
+              message: res.message,
+              type: 'warning'
+            });
+          }else{
+            
+          }
+      })
+    },
     getBlogByTag(blogCategoryName){
       this.$router.push({
         path: 'index',

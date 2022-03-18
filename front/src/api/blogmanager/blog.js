@@ -1,5 +1,15 @@
 import axios from "axios";
 
+export const editBlog = (condition) => {
+    return axios.post('/info/editBlogInfo', condition)
+        .then(res => {
+            return res.data;
+        })
+        .catch(res => {
+            return false;
+        })
+}
+
 export const pageBlog = (condition) => {
     return axios.post('/info/pageBlog', condition)
         .then(res => {

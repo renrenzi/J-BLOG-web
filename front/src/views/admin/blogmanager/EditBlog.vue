@@ -85,7 +85,7 @@
 import {getBlogTagList} from "../../../api/blogmanager/blogTag";
 import {getBlogCategoryList} from "../../../api/blogmanager/blogCategory";
 import axios from "axios";
-import {getBlogInfo, saveBlog, uploadFileByFastDFS} from "../../../api/blogmanager/blog";
+import {editBlog, getBlogInfo, saveBlog, uploadFileByFastDFS} from "../../../api/blogmanager/blog";
 import qs from "qs";
 
 export default {
@@ -167,6 +167,8 @@ export default {
       this.blogInfo.blogStatus = this.blogInfo.blogStatus ? 1 : 0;
       this.blogInfo.enableComment = this.blogInfo.enableComment ? 1 : 0;
       const _this = this;
+      if(this.blogId == ''){
+      // 发布文章
       saveBlog(qs.stringify({
         tagId: this.tagId,
         blogTitle: this.blogInfo.blogTitle,
@@ -189,6 +191,36 @@ export default {
           });
         }
       })
+      }else{
+        // 修改文章
+        editBlog(qs.stringify({
+        blogId: this.blogId,
+        tagId: this.tagId,
+        blogTitle: this.blogInfo.blogTitle,
+        blogSubUrl: this.blogInfo.blogSubUrl,
+        blogPreface: this.blogInfo.blogPreface,
+        blogContent: this.blogInfo.blogContent,
+        blogCategoryId: this.blogInfo.blogCategoryId,
+        blogCategoryName: this.blogInfo.blogCategoryName,
+        blogTags: this.blogInfo.blogTags,
+        blogStatus: this.blogInfo.blogStatus,
+        enableComment: this.blogInfo.enableComment
+      })).then(res => {
+        _this.loads = false;
+        if (res.code === 2000) {
+          _this.loads = false;
+          this.$message({
+            message: '修改成功',
+            center: true,
+            type: 'success'
+          });
+          this.$router.push(
+          {
+            path: '/blogList',
+          })
+        }
+      })
+      }
     },
 
     getBlogTag() {

@@ -7,4 +7,10 @@ package com.jj.jblog.constant;
  */
 public class StringConstants {
     public static final String URL_UNDERSCORE = "/";
+
+    /**
+     * 评论用户Ip前缀
+     */
+    public static final String COMMENT_WEBSITE_PREFIX = "ip:";
+
 }

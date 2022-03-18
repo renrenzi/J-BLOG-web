@@ -18,7 +18,7 @@ Vue.filter('moment', function (value, formatString) {
   return moment(value).format(formatString);
 
 });
-axios.defaults.baseURL = 'http://120.39.217.37:2235'
+axios.defaults.baseURL = 'http://localhost:2233'
 
 Vue.use(VueAxios, axios)
 Vue.config.productionTip = false

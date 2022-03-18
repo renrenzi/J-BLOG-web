@@ -1,6 +1,7 @@
 package com.jj.jblog.controller.blog;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jj.jblog.basic.PageCondition;
 import com.jj.jblog.basic.PageResult;
 import com.jj.jblog.basic.Result;
@@ -10,6 +11,7 @@ import com.jj.jblog.constant.UploadConstants;
 import com.jj.jblog.dao.BlogInfoMapper;
 import com.jj.jblog.entity.BlogInfo;
 import com.jj.jblog.service.BlogInfoService;
+import com.jj.jblog.util.DateUtils;
 import com.jj.jblog.util.FastDfsUtil;
 import com.jj.jblog.util.UploadFileUtil;
 import org.springframework.util.ObjectUtils;
@@ -193,17 +195,17 @@ public class BlogInfoController {
      * @param blogInfo
      * @return
      */
- /*   @PostMapping("/editBlogInfo")
+    @PostMapping("/editBlogInfo")
     public Result<String> editBlogInfo(BlogInfo blogInfo){
         if (ObjectUtils.isEmpty(blogInfo) || StringUtils.isEmpty(blogInfo.getBlogId())){
             return ResultGenerator.getResultByHttp(HttpStatusEnum.BAD_REQUEST);
         }
         blogInfo.setUpdateTime(DateUtils.getLocalCurrentTime());
-        int flag = blogInfoMapper.update(blogInfo, new QueryWrapper<>(blogInfo));
+        int flag = blogInfoMapper.updateById(blogInfo);
         if (flag < 1){
             return ResultGenerator.getResultByHttp(HttpStatusEnum.INTERNAL_SERVER_ERROR);
         }
         return ResultGenerator.getResultByHttp(HttpStatusEnum.OK);
-    }*/
+    }
 
 }
