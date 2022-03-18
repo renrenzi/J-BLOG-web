@@ -14,7 +14,7 @@ export default new Vuex.Store({
             loginUserName: ''
         },
         imgUrl: '',
-        userUrl: 'http://120.39.217.37:2234/group1/M00/00/00/rB8AYWGg996AV9XDAAmDNXwTEpw205.png'
+        userUrl: 'http://120.39.217.37:2234/group1/M00/00/00/rB8AYWI0ku-AKTJpAAAadI1c_Xc036.png'
     },
     mutations: {
         adminUser: function (state, adminUser) {
