@@ -28,7 +28,6 @@ com\jj\jblog\dao\BlogConfigMapper.class
 com\jj\jblog\controller\blog\AdminUserController.class
 com\jj\jblog\entity\BlogTagRelation.class
 com\jj\jblog\entity\BlogComment.class
-test\com\jj\jblog\controller\blog\BlogCommentControllerTest.class
 com\jj\jblog\constant\BlogStatusEnum.class
 com\jj\jblog\service\impl\BlogConfigServiceImpl.class
 com\jj\jblog\entity\BlogInfo.class

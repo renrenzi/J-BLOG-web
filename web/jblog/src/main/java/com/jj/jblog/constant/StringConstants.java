@@ -12,5 +12,10 @@ public class StringConstants {
      * 评论用户Ip前缀
      */
     public static final String COMMENT_WEBSITE_PREFIX = "ip:";
+    /**
+     * 博客浏览量前缀
+     */
+    public static final String BLOG_VIEWS_PREFIX = "blogViews";
+
 
 }

@@ -58,19 +58,22 @@
               {{blogInfo.blogCategoryName}} </el-link>
             </div>
           </el-col>
-          <el-col :span="8" :offset="6">
+            <el-col :span="8" :offset="6">
             <div class="grid-content bg-purple">
               {{blogInfo.createTime | moment}}
             </div>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="8" :offset="3">
+          <el-col :span="12" :offset="3">
             <div class="grid-content bg-purple">
               <el-link  @click="checkBlog(blogInfo.blogId)" style="font-size: 20px;">
                 {{blogInfo.blogTitle}}
               </el-link>
             </div>
+          </el-col>
+          <el-col  :span="3" :offset="1">
+            <i class="el-icon-view">{{blogInfo.blogViews}}</i> 浏览量
           </el-col>
         </el-row>
         <el-row>

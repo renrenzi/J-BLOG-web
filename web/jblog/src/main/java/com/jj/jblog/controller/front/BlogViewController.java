@@ -10,11 +10,17 @@ import com.jj.jblog.basic.ResultGenerator;
 import com.jj.jblog.constant.BlogStatusEnum;
 import com.jj.jblog.constant.DeleteStatusEnum;
 import com.jj.jblog.constant.HttpStatusEnum;
+import com.jj.jblog.constant.StringConstants;
+import com.jj.jblog.dao.BlogCommentMapper;
+import com.jj.jblog.entity.BlogComment;
 import com.jj.jblog.entity.BlogInfo;
 import com.jj.jblog.entity.BlogTagRelation;
 import com.jj.jblog.pojo.dto.BlogViewRequest;
+import com.jj.jblog.service.BlogCommentService;
 import com.jj.jblog.service.BlogInfoService;
 import com.jj.jblog.service.BlogTagRelationService;
+import com.jj.jblog.service.RedisService;
+import com.jj.jblog.util.DateUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,16 +38,19 @@ import java.util.Objects;
  * @date 2021/11/26  - {TIME}
  */
 @RestController
-@RequestMapping("front")
+@RequestMapping("/front")
 public class BlogViewController {
 
     @Resource
     private BlogInfoService blogInfoService;
     @Resource
     private BlogTagRelationService blogTagRelationService;
+    @Resource
+    private BlogCommentService blogCommentService;
 
     /**
      * 分页条件查询博客列表
+     *
      * @param conditions
      * @return
      */
@@ -51,7 +60,7 @@ public class BlogViewController {
         if (conditions == null || conditions.getPageNum() == null || conditions.getPageSize() == null) {
             return ResultGenerator.getResultByHttp(HttpStatusEnum.BAD_REQUEST);
         }
-        if ("".equals(conditions.getCategoryName())){
+        if ("".equals(conditions.getCategoryName())) {
             conditions.setCategoryName(null);
         }
         LambdaQueryWrapper<BlogInfo> sqlQuery = Wrappers.<BlogInfo>lambdaQuery()
@@ -64,29 +73,48 @@ public class BlogViewController {
         if (Objects.nonNull(conditions.getTagId())) {
             List<BlogTagRelation> list = blogTagRelationService.list(new QueryWrapper<BlogTagRelation>().lambda()
                     .eq(BlogTagRelation::getTagId, conditions.getTagId()));
-            sqlQuery.in(BlogInfo::getBlogId,list.stream().map(BlogTagRelation::getBlogId).toArray());
+            sqlQuery.in(BlogInfo::getBlogId, list.stream().map(BlogTagRelation::getBlogId).toArray());
         }
         Page<BlogInfo> page = new Page<>(conditions.getPageNum(), conditions.getPageSize());
         blogInfoService.page(page, sqlQuery);
         PageResult<BlogInfo> pageResult = new PageResult<>();
         pageResult.setTotalSize(page.getTotal());
-        if (Objects.isNull(page.getRecords())){
+        if (Objects.isNull(page.getRecords())) {
             return ResultGenerator.getResultByHttp(HttpStatusEnum.INTERNAL_SERVER_ERROR);
         }
         pageResult.setData(page.getRecords());
-        return ResultGenerator.getResultByHttp(HttpStatusEnum.OK,pageResult);
+        return ResultGenerator.getResultByHttp(HttpStatusEnum.OK, pageResult);
     }
+
     @PostMapping("/blogDetail")
-    public Result<BlogInfo> blogDetail(Long blogId){
-        if (StringUtils.isEmpty(blogId)){
+    public Result<BlogInfo> blogDetail(Long blogId) {
+        if (StringUtils.isEmpty(blogId)) {
             return ResultGenerator.getResultByHttp(HttpStatusEnum.BAD_REQUEST);
         }
+        // 浏览量缓存前缀Key
+        String key = StringConstants.BLOG_VIEWS_PREFIX + blogId;
         BlogInfo blogInfo = blogInfoService.getById(blogId);
-        if(blogInfo == null){
+        if (blogInfo == null) {
             return ResultGenerator.getResultByHttp(HttpStatusEnum.INTERNAL_SERVER_ERROR);
         }
         blogInfoService.updateById(new BlogInfo().setBlogId(blogId)
-                                                 .setBlogViews(blogInfo.getBlogViews() + 1));
-        return ResultGenerator.getResultByHttp(HttpStatusEnum.OK,blogInfo);
+                .setBlogViews(blogInfo.getBlogViews() + 1));
+        return ResultGenerator.getResultByHttp(HttpStatusEnum.OK, blogInfo);
+    }
+
+    @PostMapping("/replyComment")
+    public Result<String> replyComment(BlogComment blogComment) {
+        if (blogComment == null) {
+            return ResultGenerator.getResultByHttp(HttpStatusEnum.BAD_REQUEST);
+        }
+        if (StringUtils.isEmpty(blogComment.getReplyBody()) || blogComment.getCommentId() == null) {
+            return ResultGenerator.getResultByHttp(HttpStatusEnum.BAD_REQUEST);
+        }
+        blogComment.setReplyCreateTime(DateUtils.getLocalCurrentTime());
+        boolean count = blogCommentService.updateById(blogComment);
+        if(count){
+            return ResultGenerator.getResultByHttp(HttpStatusEnum.OK);
+        }
+        return ResultGenerator.getResultByHttp(HttpStatusEnum.INTERNAL_SERVER_ERROR);
     }
 }

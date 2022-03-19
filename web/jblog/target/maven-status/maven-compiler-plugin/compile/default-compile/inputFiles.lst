@@ -3,6 +3,7 @@ D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\service\B
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\service\impl\BlogConfigServiceImpl.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\entity\BlogTagRelation.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\service\impl\BlogCommentServiceImpl.java
+D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\service\impl\RedisServiceImpl.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\controller\blog\AdminUserController.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\service\AdminImgService.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\service\AdminUserService.java
@@ -13,6 +14,7 @@ D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\config\My
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\service\BlogLinkService.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\service\impl\AdminUserServiceImpl.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\pojo\dto\BlogViewRequest.java
+D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\basic\BaseRedisConfig.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\service\impl\BlogTagRelationServiceImpl.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\dao\BlogCategoryMapper.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\basic\Result.java
@@ -25,6 +27,7 @@ D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\service\i
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\controller\blog\BlogLinkController.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\controller\blog\BlogConfigController.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\service\BlogTagRelationService.java
+D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\service\RedisService.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\dao\BlogTagRelationMapper.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\entity\BlogTag.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\constant\DeleteStatusEnum.java
@@ -34,13 +37,13 @@ D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\config\Cr
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\controller\blog\BlogCategoryController.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\service\impl\AdminImgServiceImpl.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\controller\blog\BlogCommentController.java
+D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\util\IpAdrressUtil.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\dao\BlogInfoMapper.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\constant\SessionConstants.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\util\DateUtils.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\constant\BlogStatusEnum.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\service\BlogConfigService.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\basic\ResultGenerator.java
-D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\test\com\jj\jblog\controller\blog\BlogCommentControllerTest.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\constant\StringConstants.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\util\MD5Utils.java
 D:\Java学习\项目\JBlog\J-Blog\web\jblog\src\main\java\com\jj\jblog\service\BlogCategoryService.java

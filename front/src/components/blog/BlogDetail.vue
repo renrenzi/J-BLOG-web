@@ -1,40 +1,43 @@
 <template>
-  <el-container >
+  <el-container>
     <el-header style="z-index: 10">
       <el-row>
         <el-col :span="8">
           <el-page-header @back="goBack" :content="blogInfo.blogTitle">
           </el-page-header>
-            
         </el-col>
         <el-col :span="4" :pull="3">
           <el-divider direction="vertical"></el-divider>
-          <el-link @click="getBlogByTag(blogInfo.blogCategoryName)">{{blogInfo.blogCategoryName}}</el-link>
+          <el-link @click="getBlogByTag(blogInfo.blogCategoryName)">{{
+            blogInfo.blogCategoryName
+          }}</el-link>
         </el-col>
-        <el-col :span="12" > 
-          <i class="el-icon-view">{{blogInfo.blogViews}}</i>
+        <el-col :span="12" v-if="blogStatus == '' || blogStatus == null">
+          <i class="el-icon-view">{{ blogInfo.blogViews }}</i> 浏览量
         </el-col>
       </el-row>
-      
     </el-header>
-    <el-main >
+    <el-main>
       <el-container>
-        <el-main style="width: 1000px;margin-left: 180px">
+        <el-main style="width: 1000px; margin-left: 180px">
           <el-row>
-            <mavon-editor v-model="blogInfo.blogContent"
-                          :subfield="false"
-                          :editable="false"
-                          defaultOpen="preview"
-                          :toolbarsFlag="false"
-                          fontSize="16px"
+            <mavon-editor
+              v-model="blogInfo.blogContent"
+              :subfield="false"
+              :editable="false"
+              defaultOpen="preview"
+              :toolbarsFlag="false"
+              fontSize="16px"
             ></mavon-editor>
           </el-row>
-          </el-main>
+        </el-main>
 
-        <el-footer style="width: 1000px;margin-left: 180px">
+        <el-footer style="width: 1000px; margin-left: 180px">
           <el-row>
-            <div class="blog ">
-              <p>本站文章除注明转载/出处外，皆为作者原创，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文连接，否则保留追究法律责任的权利。</p>
+            <div class="blog">
+              <p>
+                本站文章除注明转载/出处外，皆为作者原创，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文连接，否则保留追究法律责任的权利。
+              </p>
             </div>
           </el-row>
           <el-row v-if="blogInfo.blogId !== 33">
@@ -45,10 +48,11 @@
             </el-col>
             <el-col :span="23">
               <el-input
-                  type="textarea"
-                  :rows="4"
-                  placeholder="请输入内容"
-                  v-model="textarea">
+                type="textarea"
+                :rows="4"
+                placeholder="请输入内容"
+                v-model="textarea"
+              >
               </el-input>
             </el-col>
           </el-row>
@@ -59,7 +63,9 @@
           </el-row>
           <el-row v-if="blogInfo.blogId !== 33">
             <el-col>
-              <el-divider content-position="left"><i class="el-icon-chat-line-square"></i>全部评论</el-divider>
+              <el-divider content-position="left"
+                ><i class="el-icon-chat-line-square"></i>全部评论</el-divider
+              >
             </el-col>
           </el-row>
           <div v-for="comment in commentList" v-if="blogInfo.blogId !== 33">
@@ -71,29 +77,47 @@
               </el-col>
               <el-col :span="4">
                 <div>
-                  <span>{{comment.commentator}}</span>
+                  <span>{{ comment.commentator }}</span>
                 </div>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="4" :push="2">
-                <span>{{comment.commentBody}}</span>
+                <span>{{ comment.commentBody }}</span>
               </el-col>
               <el-col :span="4" :push="18">
-                <span>{{comment.commentCreateTime | moment}}</span>
+                <span>{{ comment.commentCreateTime | moment }}</span>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="4" :push="2">
-                回复
+                <el-popover placement="bottom" width="400" trigger="click">
+                  <el-input
+                    type="textarea"
+                    :rows="4"
+                    placeholder="请输入内容"
+                    v-model="replyBody"
+                  >
+                  </el-input>
+                  <el-row v-if="blogInfo.blogId !== 33">
+                    <el-col :push="20" :span="2">
+                      <el-button
+                        type="primary"
+                        @click="reply(comment.commentId)"
+                        >回复</el-button
+                      >
+                    </el-col>
+                  </el-row>
+                  <el-link slot="reference">回复</el-link>
+                </el-popover>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="4" :push="2">
-                <span>{{comment.replyBody}}</span>
+                <span>{{ comment.replyBody }}</span>
               </el-col>
               <el-col :span="4" :push="18">
-                <!-- <span>{{comment.replyCreateTime | moment}}</span> -->
+                <span>{{comment.replyCreateTime | moment}}</span>
               </el-col>
             </el-row>
             <el-row>
@@ -102,107 +126,146 @@
               </el-col>
             </el-row>
           </div>
-
         </el-footer>
       </el-container>
     </el-main>
-
   </el-container>
 </template>
 
 <script>
-import {getBlogInfo} from "@/api/blogmanager/blog";
+import { getBlogInfo } from "@/api/blogmanager/blog";
 import qs from "qs";
 import BlogComment from "./BlogComment";
-import comment from 'bright-comment'
-import {pageComment} from "@/api/blogmanager/blogComment";
-import {blogDetail} from "@/api/front/blogView";
-import { createComment } from '../../api/blogmanager/blogComment';
+import comment from "bright-comment";
+import { pageComment } from "@/api/blogmanager/blogComment";
+import { blogDetail } from "@/api/front/blogView";
+import { createComment, replyComment } from "../../api/blogmanager/blogComment";
 export default {
   name: "BlogDetail",
   components: {
     BlogComment,
-    comment
+    comment,
   },
-  data(){
+  data() {
     return {
-      blogInfo:{},
-      textarea: '',
+      blogInfo: {},
+      textarea: "",
       commentList: [],
-      imgUrl: this.$store.state.userUrl
-    }
+      imgUrl: this.$store.state.userUrl,
+      blogStatus: this.$route.query.blogStatus,
+      replyBody: "",
+    };
   },
   created() {
     this.getBlogInfo();
   },
-  methods:{
-    create(){
+  methods: {
+    reply(commentId) {
       const _this = this;
-      createComment(qs.stringify({
-        blogId: this.blogInfo.blogId,
-        commentBody: this.textarea
-      })).then(res => {
-          if(res.code == 2000){
-             _this.$message({
-              showClose: true,
-              message: '评论成功',
-              type: 'success'
-            });
-            pageComment(qs.stringify({
-          pageNum: 1,
-          pageSize: 5,
-          blogId: _this.$route.query.blogId
-      })).then(res => {
-          _this.commentList = res.data;
-      })
-          }else if(res.code == 5002){
-              _this.$message({
-              showClose: true,
-              message: res.message,
-              type: 'warning'
-            });
-          }else{
-            
-          }
-      })
-    },
-    getBlogByTag(blogCategoryName){
-      this.$router.push({
-        path: 'index',
-        query: {
-          blogCategoryName : blogCategoryName
+      replyComment(
+        qs.stringify({
+          commentId: commentId,
+          replyBody: this.replyBody,
+        })
+      ).then((res) => {
+        if (res.code == 2000) {
+          _this.$message({
+            showClose: true,
+            message: "回复成功",
+            type: "success",
+          });
+          pageComment(
+            qs.stringify({
+              pageNum: 1,
+              pageSize: 5,
+              blogId: _this.$route.query.blogId,
+            })
+          ).then((res) => {
+            _this.commentList = res.data;
+          });
+        } else if (res.code == 5002) {
+          _this.$message({
+            showClose: true,
+            message: res.message,
+            type: "warning",
+          });
+        } else {
         }
-      })
+      });
     },
-    goBack(){
-      this.$router.push(
-          {
-            path: '/index',
-          })
+    create() {
+      const _this = this;
+      createComment(
+        qs.stringify({
+          blogId: this.blogInfo.blogId,
+          commentBody: this.textarea,
+        })
+      ).then((res) => {
+        if (res.code == 2000) {
+          _this.$message({
+            showClose: true,
+            message: "评论成功",
+            type: "success",
+          });
+          pageComment(
+            qs.stringify({
+              pageNum: 1,
+              pageSize: 5,
+              blogId: _this.$route.query.blogId,
+            })
+          ).then((res) => {
+            _this.commentList = res.data;
+          });
+        } else if (res.code == 5002) {
+          _this.$message({
+            showClose: true,
+            message: res.message,
+            type: "warning",
+          });
+        } else {
+        }
+      });
     },
-    getBlogInfo(){
-      blogDetail(qs.stringify({
-        blogId: this.$route.query.blogId
-      })).then(res => {
-        this.blogInfo =   res.data;
-      })
-      pageComment(qs.stringify({
+    getBlogByTag(blogCategoryName) {
+      this.$router.push({
+        path: "index",
+        query: {
+          blogCategoryName: blogCategoryName,
+        },
+      });
+    },
+    goBack() {
+      this.$router.push({
+        path: "/index",
+      });
+    },
+    getBlogInfo() {
+      blogDetail(
+        qs.stringify({
+          blogId: this.$route.query.blogId,
+        })
+      ).then((res) => {
+        this.blogInfo = res.data;
+      });
+      pageComment(
+        qs.stringify({
           pageNum: 1,
           pageSize: 5,
-          blogId: this.$route.query.blogId
-      })).then(res => {
-          this.commentList = res.data;
-      })
-    }
-  }
-}
+          blogId: this.$route.query.blogId,
+        })
+      ).then((res) => {
+        this.commentList = res.data;
+      });
+    },
+  },
+};
 </script>
 
 <style scoped>
-.el-container{
+.el-container {
   display: flex;
 }
-.blog{
+.blog {
   padding-top: 5px;
   padding-right: 10px;
   padding-bottom: 10px;

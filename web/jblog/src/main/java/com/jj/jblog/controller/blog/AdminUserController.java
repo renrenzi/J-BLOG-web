@@ -50,7 +50,6 @@ public class AdminUserController {
 
     /**
      * 登录校验
-     *
      * @param adminUser
      * @return
      */

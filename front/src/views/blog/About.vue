@@ -18,7 +18,8 @@ export default {
           {
             path: '/blogDetail',
             query: {
-              blogId: this.$store.state.aboutId
+              blogId: this.$store.state.aboutId,
+              blogStatus : 1
             }
           })
 

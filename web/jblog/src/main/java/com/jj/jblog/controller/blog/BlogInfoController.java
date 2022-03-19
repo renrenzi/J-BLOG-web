@@ -41,21 +41,23 @@ public class BlogInfoController {
 
     /**
      * 保存文章图片 (!采用 FastDFS 文件上传)
+     *
      * @param file
      * @return
      */
     @PostMapping("/uploadFileByFastDFS")
     public Result<String> uploadFileByFastDFS(MultipartFile file) {
-        if (ObjectUtils.isEmpty(file)){
+        if (ObjectUtils.isEmpty(file)) {
             return ResultGenerator.getResultByHttp(HttpStatusEnum.BAD_REQUEST);
         }
         String url = UploadFileUtil.getUploadFileUrl(file);
 
-        return ResultGenerator.getResultByHttp(HttpStatusEnum.OK,url);
+        return ResultGenerator.getResultByHttp(HttpStatusEnum.OK, url);
     }
 
     /**
      * 保存文章图片 (!!!!!！想采用 FastDFS 文件上传 --> 未实现)
+     *
      * @param file
      * @return
      */
@@ -86,6 +88,7 @@ public class BlogInfoController {
 
     /**
      * 保存文章内容
+     *
      * @param tagId
      * @param blogInfo
      * @return
@@ -100,6 +103,7 @@ public class BlogInfoController {
 
     /**
      * 分页查询文章列表
+     *
      * @param condition
      * @param blogInfo
      * @return
@@ -118,6 +122,7 @@ public class BlogInfoController {
 
     /**
      * 修改文章部分状态
+     *
      * @param blogInfo
      * @return
      */
@@ -131,6 +136,7 @@ public class BlogInfoController {
 
     /**
      * 更新文章删除状态
+     *
      * @param blogId
      * @return
      */
@@ -144,11 +150,12 @@ public class BlogInfoController {
 
     /**
      * 清除文章数据库数据
+     *
      * @param blogId
      * @return
      */
     @PostMapping("/clearBlog")
-    public Result<String> clearBlog(@RequestParam Long blogId){
+    public Result<String> clearBlog(@RequestParam Long blogId) {
         if (StringUtils.isEmpty(blogId)) {
             return ResultGenerator.getResultByHttp(HttpStatusEnum.BAD_REQUEST);
         }
@@ -157,11 +164,12 @@ public class BlogInfoController {
 
     /**
      * 还原文章
+     *
      * @param blogId
      * @return
      */
     @PostMapping("/restoreBlog")
-    public Result<String> restoreBlog(@RequestParam Long blogId){
+    public Result<String> restoreBlog(@RequestParam Long blogId) {
         if (StringUtils.isEmpty(blogId)) {
             return ResultGenerator.getResultByHttp(HttpStatusEnum.BAD_REQUEST);
         }
@@ -170,39 +178,42 @@ public class BlogInfoController {
 
     /**
      * 获取所有博客
+     *
      * @return
      */
     @GetMapping("/getAllBlog")
-    public Result<List<BlogInfo>> getAllBlog(){
+    public Result<List<BlogInfo>> getAllBlog() {
         return blogInfoService.getAllBlog();
     }
 
     /**
      * 获取博客详细信息
+     *
      * @param blogId
      * @return
      */
     @PostMapping("/getBlogInfo")
-    public Result<BlogInfo> getBlogInfo(Long blogId){
+    public Result<BlogInfo> getBlogInfo(Long blogId) {
         if (StringUtils.isEmpty(blogId)) {
             return ResultGenerator.getResultByHttp(HttpStatusEnum.BAD_REQUEST);
         }
-        return ResultGenerator.getResultByHttp(HttpStatusEnum.OK,blogInfoMapper.selectById(blogId));
+        return ResultGenerator.getResultByHttp(HttpStatusEnum.OK, blogInfoMapper.selectById(blogId));
     }
 
     /**
      * 修改文章内容
+     *
      * @param blogInfo
      * @return
      */
     @PostMapping("/editBlogInfo")
-    public Result<String> editBlogInfo(BlogInfo blogInfo){
-        if (ObjectUtils.isEmpty(blogInfo) || StringUtils.isEmpty(blogInfo.getBlogId())){
+    public Result<String> editBlogInfo(BlogInfo blogInfo) {
+        if (ObjectUtils.isEmpty(blogInfo) || StringUtils.isEmpty(blogInfo.getBlogId())) {
             return ResultGenerator.getResultByHttp(HttpStatusEnum.BAD_REQUEST);
         }
         blogInfo.setUpdateTime(DateUtils.getLocalCurrentTime());
         int flag = blogInfoMapper.updateById(blogInfo);
-        if (flag < 1){
+        if (flag < 1) {
             return ResultGenerator.getResultByHttp(HttpStatusEnum.INTERNAL_SERVER_ERROR);
         }
         return ResultGenerator.getResultByHttp(HttpStatusEnum.OK);

@@ -1,5 +1,15 @@
 import axios from "axios";
 
+export const replyComment = (blogComment) => {
+    return axios.post('/front/replyComment', blogComment)
+        .then(res => {
+            return res.data;
+        })
+        .catch(res => {
+            return false;
+        })
+}
+
 export const createComment = (blogComment) => {
     return axios.post('/comment/createComment', blogComment)
         .then(res => {

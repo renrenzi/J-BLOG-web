@@ -106,6 +106,7 @@
                     <fork>true</fork>
                     <addResources>true</addResources>
                 </configuration>
+
             </plugin>
         </plugins>
     </build>
