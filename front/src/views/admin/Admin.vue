@@ -15,7 +15,9 @@
     </el-main>
     <el-footer height="100px" style="background-color: rgb(238, 241, 246);">
       <div class="el-login-footer">
-        <span >Copyright © 2021 RenRenZi All Rights Reserved.</span>
+       <span>Copyright © 2021-2022 RenRenZi All Rights Reserved.</span>
+      <el-link href="https://beian.miit.gov.cn/#/Integrated/recordQuery">闽ICP备2022003846号</el-link>
+    Powered by <el-link href="#" target="_blank">任人子</el-link>
       </div>
     </el-footer>
   </el-container>

@@ -1,6 +1,9 @@
 server:
   port: 2233
-
+#  ssl:
+#    key-store: classpath:renrenzi.top.pfx #拷贝到根目录的证书文件
+#    key-store-password: NtnB5ewk!3DtV!c  #密码(下载tomcat证书压缩包里的txt文件)
+#    key-store-type: PKCS12       #固定写法
 spring:
   datasource:
     driver-class-name: org.gjt.mm.mysql.Driver

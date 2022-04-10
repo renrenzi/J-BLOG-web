@@ -1,6 +1,7 @@
 package com.jj.jblog.controller.blog;
 
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jj.jblog.basic.PageCondition;
 import com.jj.jblog.basic.PageResult;
@@ -14,6 +15,8 @@ import com.jj.jblog.service.BlogInfoService;
 import com.jj.jblog.util.DateUtils;
 import com.jj.jblog.util.FastDfsUtil;
 import com.jj.jblog.util.UploadFileUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +30,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 博客详情管理
  * @author 张俊杰
  * @date 2021/11/5  - {TIME}
  */
+@Api(tags = "blogInfoController", description = "博客详情管理")
 @RequestMapping("info")
 @RestController
 public class BlogInfoController {
@@ -39,19 +44,14 @@ public class BlogInfoController {
     @Resource
     private BlogInfoMapper blogInfoMapper;
 
-    /**
-     * 保存文章图片 (!采用 FastDFS 文件上传)
-     *
-     * @param file
-     * @return
-     */
+
+    @ApiOperation(value = "保存文章图片 (!采用 FastDFS 文件上传)")
     @PostMapping("/uploadFileByFastDFS")
     public Result<String> uploadFileByFastDFS(MultipartFile file) {
         if (ObjectUtils.isEmpty(file)) {
             return ResultGenerator.getResultByHttp(HttpStatusEnum.BAD_REQUEST);
         }
         String url = UploadFileUtil.getUploadFileUrl(file);
-
         return ResultGenerator.getResultByHttp(HttpStatusEnum.OK, url);
     }
 
@@ -86,13 +86,7 @@ public class BlogInfoController {
         return result;
     }
 
-    /**
-     * 保存文章内容
-     *
-     * @param tagId
-     * @param blogInfo
-     * @return
-     */
+    @ApiOperation(value = "保存文章内容")
     @PostMapping("/saveBlog")
     public Result<String> saveBlog(Integer tagId, BlogInfo blogInfo) {
         if (StringUtils.isEmpty(tagId) || ObjectUtils.isEmpty(blogInfo)) {
@@ -101,13 +95,7 @@ public class BlogInfoController {
         return blogInfoService.saveBlog(tagId, blogInfo);
     }
 
-    /**
-     * 分页查询文章列表
-     *
-     * @param condition
-     * @param blogInfo
-     * @return
-     */
+    @ApiOperation(value = "分页查询文章列表")
     @PostMapping("/pageBlog")
     public Result<PageResult> pageBlog(PageCondition<BlogInfo> condition, BlogInfo blogInfo) {
         // 传参问题,未解决
@@ -120,12 +108,7 @@ public class BlogInfoController {
         return blogInfoService.pageBlog(condition, blogInfo);
     }
 
-    /**
-     * 修改文章部分状态
-     *
-     * @param blogInfo
-     * @return
-     */
+    @ApiOperation(value = "修改文章部分状态")
     @PostMapping("/blogStatus")
     public Result<String> updateBlogStatus(BlogInfo blogInfo) {
         if (ObjectUtils.isEmpty(blogInfo.getBlogId())) {
@@ -134,12 +117,7 @@ public class BlogInfoController {
         return blogInfoService.updateBlogStatus(blogInfo);
     }
 
-    /**
-     * 更新文章删除状态
-     *
-     * @param blogId
-     * @return
-     */
+    @ApiOperation(value = "更新文章删除状态")
     @PostMapping("/deleteBlog")
     public Result<String> deleteBlog(Long blogId) {
         if (StringUtils.isEmpty(blogId)) {
@@ -148,12 +126,7 @@ public class BlogInfoController {
         return blogInfoService.deleteBlog(blogId);
     }
 
-    /**
-     * 清除文章数据库数据
-     *
-     * @param blogId
-     * @return
-     */
+    @ApiOperation(value = "清除文章数据库数据")
     @PostMapping("/clearBlog")
     public Result<String> clearBlog(@RequestParam Long blogId) {
         if (StringUtils.isEmpty(blogId)) {
@@ -162,12 +135,7 @@ public class BlogInfoController {
         return blogInfoService.clearBlog(blogId);
     }
 
-    /**
-     * 还原文章
-     *
-     * @param blogId
-     * @return
-     */
+    @ApiOperation(value = "还原文章")
     @PostMapping("/restoreBlog")
     public Result<String> restoreBlog(@RequestParam Long blogId) {
         if (StringUtils.isEmpty(blogId)) {
@@ -176,22 +144,14 @@ public class BlogInfoController {
         return blogInfoService.restoreBlog(blogId);
     }
 
-    /**
-     * 获取所有博客
-     *
-     * @return
-     */
+    @ApiOperation(value = "获取所有博客")
     @GetMapping("/getAllBlog")
     public Result<List<BlogInfo>> getAllBlog() {
         return blogInfoService.getAllBlog();
     }
 
-    /**
-     * 获取博客详细信息
-     *
-     * @param blogId
-     * @return
-     */
+
+    @ApiOperation(value = "获取博客详细信息")
     @PostMapping("/getBlogInfo")
     public Result<BlogInfo> getBlogInfo(Long blogId) {
         if (StringUtils.isEmpty(blogId)) {
@@ -200,12 +160,7 @@ public class BlogInfoController {
         return ResultGenerator.getResultByHttp(HttpStatusEnum.OK, blogInfoMapper.selectById(blogId));
     }
 
-    /**
-     * 修改文章内容
-     *
-     * @param blogInfo
-     * @return
-     */
+    @ApiOperation(value = "修改文章内容")
     @PostMapping("/editBlogInfo")
     public Result<String> editBlogInfo(BlogInfo blogInfo) {
         if (ObjectUtils.isEmpty(blogInfo) || StringUtils.isEmpty(blogInfo.getBlogId())) {

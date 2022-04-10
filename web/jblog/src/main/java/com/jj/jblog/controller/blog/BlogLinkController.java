@@ -10,6 +10,8 @@ import com.jj.jblog.constant.LinkConstants;
 import com.jj.jblog.entity.BlogLink;
 import com.jj.jblog.service.BlogLinkService;
 import com.jj.jblog.util.DateUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -23,20 +25,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 博客友链管理
  * @author 张俊杰
  * @date 2021/11/19  - {TIME}
  */
+@Api(tags = "blogLinkController", description = "博客友链管理")
 @RestController
 @RequestMapping("/link")
 public class BlogLinkController {
     @Resource
     private BlogLinkService blogLinkService;
 
-    /**
-     * 获取链接类型列表
-     *
-     * @return
-     */
+    @ApiOperation(value ="获取链接类型列表")
     @GetMapping("/getLinkTypeList")
     public Result<List<BlogLink>> getLinkTypeList() {
         List<BlogLink> result = new ArrayList<BlogLink>();
@@ -49,13 +49,7 @@ public class BlogLinkController {
         return ResultGenerator.getResultByHttp(HttpStatusEnum.OK, result);
     }
 
-    /**
-     * 分页查询链接列表
-     *
-     * @param condition
-     * @param blogLink
-     * @return
-     */
+    @ApiOperation(value ="分页查询链接列表")
     @PostMapping("/pageLinkList")
     public Result<PageResult<BlogLink>> pageLinkList(PageCondition<BlogLink> condition, BlogLink blogLink) {
         if (StringUtils.isEmpty(condition.getPageNum()) || StringUtils.isEmpty(condition.getPageSize())) {
@@ -64,12 +58,7 @@ public class BlogLinkController {
         return blogLinkService.pageLinkList(condition, blogLink);
     }
 
-    /**
-     * 添加链接
-     *
-     * @param blogLink
-     * @return
-     */
+    @ApiOperation(value ="添加链接")
     @PostMapping("/addLink")
     public Result<String> addLink(BlogLink blogLink) {
         if (ObjectUtils.isEmpty(blogLink)) {
@@ -83,12 +72,7 @@ public class BlogLinkController {
         return ResultGenerator.getResultByHttp(HttpStatusEnum.OK);
     }
 
-    /**
-     * 修改删除状态
-     *
-     * @param blogLink
-     * @return
-     */
+    @ApiOperation(value ="修改删除状态")
     @PostMapping("/isDel")
     public Result<String> isDel(BlogLink blogLink) {
         if (ObjectUtils.isEmpty(blogLink)) {
@@ -100,12 +84,7 @@ public class BlogLinkController {
         return ResultGenerator.getResultByHttp(HttpStatusEnum.OK);
     }
 
-    /**
-     * 清除链接信息
-     *
-     * @param linkId
-     * @return
-     */
+    @ApiOperation(value ="清除链接信息")
     @PostMapping("/clearLink")
     public Result<String> clearLink(Integer linkId) {
         if (StringUtils.isEmpty(linkId)) {
@@ -117,12 +96,7 @@ public class BlogLinkController {
         return ResultGenerator.getResultByHttp(HttpStatusEnum.OK);
     }
 
-    /**
-     * 获取链接
-     *
-     * @param linkId
-     * @return
-     */
+    @ApiOperation(value ="获取链接")
     @PostMapping("/getLink")
     public Result<BlogLink> getLink(Integer linkId) {
         if (StringUtils.isEmpty(linkId)) {
@@ -135,12 +109,7 @@ public class BlogLinkController {
         return ResultGenerator.getResultByHttp(HttpStatusEnum.OK, blogLink);
     }
 
-    /**
-     * 修改链接信息
-     *
-     * @param blogLink
-     * @return
-     */
+    @ApiOperation(value ="修改链接信息")
     @PostMapping("/editLink")
     public Result<String> editLinkOrSave(BlogLink blogLink) {
         if (ObjectUtils.isEmpty(blogLink)) {

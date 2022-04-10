@@ -52,7 +52,7 @@ public class BlogInfo {
     private Integer blogCategoryId;
 
     /**
-     * 博客分类(冗余字段
+     * 博客分类(冗余字段)
      */
     private String blogCategoryName;
 
@@ -72,6 +72,10 @@ public class BlogInfo {
     private Long blogViews;
 
     /**
+     * 点赞数
+     */
+    private Long blogLikes;
+    /**
      * 0-允许评论 1-不允许评论
      */
     private Integer enableComment;
@@ -90,5 +94,6 @@ public class BlogInfo {
      * 修改时间
      */
     private Date updateTime;
+
 
 }

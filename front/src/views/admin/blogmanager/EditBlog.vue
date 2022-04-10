@@ -100,6 +100,7 @@ export default {
         blogCategoryId: '',
         blogCategoryName: '',
         blogTags: '',
+        blogLikes: 0,
         /**
          * 0-草稿 1-发布
          */

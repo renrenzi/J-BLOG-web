@@ -43,7 +43,7 @@ public class BlogInfoServiceImpl extends ServiceImpl<BlogInfoMapper,BlogInfo> im
     public Result<String> saveBlog(Integer tagIdList, BlogInfo blogInfo) {
         blogInfo.setCreateTime(DateUtils.getLocalCurrentTime());
         blogInfo.setUpdateTime(DateUtils.getLocalCurrentTime());
-
+        blogInfo.setBlogLikes(0L);
         if (blogInfoMapper.insert(blogInfo) > 0) {
             // 创建文章标签关系列表
             List<BlogTagRelation> list = new ArrayList() {{

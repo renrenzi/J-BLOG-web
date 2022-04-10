@@ -7,6 +7,8 @@ import com.jj.jblog.basic.ResultGenerator;
 import com.jj.jblog.constant.HttpStatusEnum;
 import com.jj.jblog.entity.BlogTag;
 import com.jj.jblog.service.BlogTagService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,9 +20,11 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
+ * 博客标签管理
  * @author 张俊杰
  * @date 2021/11/10  - {TIME}
  */
+@Api(tags = "blogLinkController", description = "博客标签管理")
 @RequestMapping("tag")
 @RestController
 public class BlogTagController {
@@ -28,21 +32,13 @@ public class BlogTagController {
     @Resource
     private BlogTagService blogTagService;
 
-    /**
-     * 过去未删除的标签列表
-     * @return
-     */
+    @ApiOperation(value = "过去未删除的标签列表")
     @GetMapping("/getBlogTag")
     public Result<List<BlogTag>> getBlogTagList(){
         return blogTagService.getBlogTags();
     }
 
-    /**
-     * 分页查询标签列表
-     * @param condition
-     * @param blogTag
-     * @return
-     */
+    @ApiOperation(value = "分页查询标签列表")
     @PostMapping("/pageBlogTag")
     public Result<PageResult> pageBlogTag(PageCondition<BlogTag> condition, BlogTag blogTag) {
         // 传参问题,未解决
@@ -55,11 +51,7 @@ public class BlogTagController {
         return blogTagService.pageBlogTag(condition,blogTag);
     }
 
-    /**
-     * 更新标签状态
-     * @param blogTag
-     * @return
-     */
+    @ApiOperation(value = "更新标签状态")
     @PostMapping("/tagStatus")
     public Result<String> updateTagStatus(BlogTag blogTag){
         if (ObjectUtils.isEmpty(blogTag)){
@@ -68,11 +60,7 @@ public class BlogTagController {
         return blogTagService.updateTagStatus(blogTag);
     }
 
-    /**
-     * 清除标签数据库
-     * @param tagId
-     * @return
-     */
+    @ApiOperation(value = "清除标签数据库")
     @PostMapping("/tagClear")
     public Result<String> clearTag(Integer tagId){
         if (StringUtils.isEmpty(tagId)){
@@ -81,11 +69,7 @@ public class BlogTagController {
         return blogTagService.clearTag(tagId);
     }
 
-    /**
-     * 添加标签
-     * @param blogTag
-     * @return
-     */
+    @ApiOperation(value = "添加标签")
     @PostMapping("/addTag")
     public Result<String> addTag(BlogTag blogTag){
         if(ObjectUtils.isEmpty(blogTag)){
@@ -94,11 +78,7 @@ public class BlogTagController {
         return blogTagService.addTag(blogTag);
     }
 
-    /**
-     * 获取标签
-     * @param tagId
-     * @return
-     */
+    @ApiOperation(value = "获取标签")
     @PostMapping("/getTag")
     public Result<BlogTag> getTag(Integer tagId){
         if (StringUtils.isEmpty(tagId)){

@@ -1,16 +1,17 @@
 package com.jj.jblog.controller.blog;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jj.jblog.basic.Result;
 import com.jj.jblog.basic.ResultGenerator;
 import com.jj.jblog.constant.*;
 import com.jj.jblog.entity.AdminImg;
 import com.jj.jblog.entity.AdminUser;
+import com.jj.jblog.entity.LoginLog;
 import com.jj.jblog.service.*;
-import com.jj.jblog.util.DateUtils;
-import com.jj.jblog.util.FastDfsUtil;
-import com.jj.jblog.util.MD5Utils;
-import com.jj.jblog.util.UploadFileUtil;
+import com.jj.jblog.util.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -21,14 +22,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 后台用户管理
  * @author 张俊杰
  * @date 2021/11/20  - {TIME}
  */
+@Api(tags = "AdminUserController", description = "后台用户管理")
 @RequestMapping("admin")
 @RestController
 public class AdminUserController {
@@ -47,12 +51,12 @@ public class AdminUserController {
     private BlogLinkService blogLinkService;
     @Resource
     private AdminImgService adminImgService;
+    @Resource
+    private HttpServletRequest request;
+    @Resource
+    private LonginLogService loginLogService;
 
-    /**
-     * 登录校验
-     * @param adminUser
-     * @return
-     */
+    @ApiOperation(value = "管理员登录校验")
     @PostMapping("/login")
     public Result<Map<String, Object>> adminLogin(AdminUser adminUser) {
         String password = adminUser.getLoginPassword();
@@ -64,20 +68,38 @@ public class AdminUserController {
         if (exits == null) {
             return ResultGenerator.getResultByHttp(HttpStatusEnum.UNAUTHORIZED);
         }
+        StpUtil.login(exits.getAdminUserId());
         AdminImg adminImg = adminImgService.getOne(new QueryWrapper<AdminImg>().lambda()
                 .eq(AdminImg::getAdminId, exits.getAdminUserId()));
-        Map<String,Object> result = new HashMap<>(2);
-        result.put("adminUser",exits);
-        if (adminImg != null){
-            result.put("imgUrl",adminImg.getAdminImgUrl());
+        Map<String, Object> result = new HashMap<>(2);
+        result.put("adminUser", exits);
+        // SA-token 返回token值
+        result.put("token", StpUtil.getTokenValue());
+        if (adminImg != null) {
+            result.put("imgUrl", adminImg.getAdminImgUrl());
         }
+        insertLoginInfo(adminUser.getLoginUserName());
         return ResultGenerator.getResultByHttp(HttpStatusEnum.OK, result);
     }
 
     /**
-     * 获取各个总数
-     * @return
+     * 插入登录信息
+     * @param loginName 
      */
+    private void insertLoginInfo(String loginName){
+        LoginLog log = new LoginLog().setLoginIp(IpAdrressUtil.getIpAdrress(request))
+                                    .setLoginTime(DateUtils.getLocalCurrentTime())
+                                    .setLoginName(loginName);
+        loginLogService.save(log);
+    }
+    
+    @ApiOperation(value = "登出")
+    @GetMapping("/logOut")
+    public Result logOut() {
+        return ResultGenerator.getResultByHttp(HttpStatusEnum.OK);
+    }
+
+    @ApiOperation(value = "页面数据展示")
     @GetMapping("/count")
     public Result<Map<String, Integer>> getCount() {
         Map<String, Integer> result = new HashMap<String, Integer>(5);
@@ -89,13 +111,7 @@ public class AdminUserController {
         return ResultGenerator.getResultByHttp(HttpStatusEnum.OK, result);
     }
 
-    /**
-     * 上传头像
-     *
-     * @param userImage
-     * @param adminUser
-     * @return
-     */
+    @ApiOperation(value = "上传头像")
     @PostMapping("/uploadAuthorImg")
     @Transactional(rollbackFor = {Exception.class})
     public Result<String> uploadAuthorImg(MultipartFile userImage, AdminUser adminUser) {
@@ -125,20 +141,16 @@ public class AdminUserController {
         return ResultGenerator.getResultByHttp(HttpStatusEnum.OK, url);
     }
 
-    /**
-     * 修改用户信息
-     * @param adminUser
-     * @return
-     */
+    @ApiOperation(value = "修改用户信息")
     @PostMapping("/editUserInfo")
     public Result<String> editUserInfo(AdminUser adminUser) {
         if (ObjectUtils.isEmpty(adminUser)) {
             return ResultGenerator.getResultByHttp(HttpStatusEnum.BAD_REQUEST);
         }
         String password = adminUser.getLoginPassword();
-        if (!StringUtils.isEmpty(password)){
+        if (!StringUtils.isEmpty(password)) {
             adminUser.setLoginPassword(MD5Utils.getMD5(password));
-        }else {
+        } else {
             adminUser.setLoginPassword(null);
         }
         if (!adminUserService.updateById(adminUser)) {
