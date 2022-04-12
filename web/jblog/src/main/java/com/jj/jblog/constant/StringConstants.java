@@ -27,5 +27,8 @@ public class StringConstants {
      */
     public static final String BLOG_LIKES_COUNT_PREFIX = "blogLikeCount";
 
-
+    /**
+     *  用户日活访问Key
+     */
+    public static final String BLOG_USER_VISIT_KEY = "blogUserVisit";
 }

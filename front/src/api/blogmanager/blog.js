@@ -21,7 +21,7 @@ export const pageBlog = (condition) => {
 }
 
 export const saveBlog = (saveParam) => {
-    return axios.post('/info/saveBlog',saveParam)
+    return axios.post('/info/saveBlog2',saveParam)
         .then(res => {
             return res.data;
         })

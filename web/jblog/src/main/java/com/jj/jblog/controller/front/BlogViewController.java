@@ -15,16 +15,16 @@ import com.jj.jblog.dao.BlogCommentMapper;
 import com.jj.jblog.entity.BlogComment;
 import com.jj.jblog.entity.BlogInfo;
 import com.jj.jblog.entity.BlogTagRelation;
+import com.jj.jblog.pojo.dto.BlogInfoResponseDto;
 import com.jj.jblog.pojo.dto.BlogLikesStatusDto;
+import com.jj.jblog.pojo.dto.BlogPageCondition;
 import com.jj.jblog.pojo.dto.BlogViewRequest;
-import com.jj.jblog.service.BlogCommentService;
-import com.jj.jblog.service.BlogInfoService;
-import com.jj.jblog.service.BlogTagRelationService;
-import com.jj.jblog.service.RedisService;
+import com.jj.jblog.service.*;
 import com.jj.jblog.util.DateUtils;
 import com.jj.jblog.util.IpAdrressUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,7 +60,27 @@ public class BlogViewController {
     private HttpServletRequest request;
     @Resource
     private RedisService redisService;
+    @Resource
+    private BlogCategoryService blogCategoryService;
 
+    @ApiOperation("获取今天总日流量")
+    @GetMapping("/getCurrentVisit")
+    public Result<Integer> getCurrentVisit() {
+        return ResultGenerator.getResultByHttp(HttpStatusEnum.OK,
+                redisService.hGetAll(StringConstants.BLOG_USER_VISIT_KEY).size());
+    }
+
+    @ApiOperation("用户访问状态查询")
+    @GetMapping("/userVisit")
+    public Result userVisit() {
+        String hashKey = IpAdrressUtil.getIpAdrress(request);
+        Integer count = (Integer) redisService.hGet(StringConstants.BLOG_USER_VISIT_KEY, hashKey);
+        if (count != null) {
+            return ResultGenerator.getResultByHttp(HttpStatusEnum.OK);
+        }
+        redisService.hSet(StringConstants.BLOG_USER_VISIT_KEY, hashKey, 0, 24 * 60 * 60);
+        return ResultGenerator.getResultByHttp(HttpStatusEnum.OK);
+    }
 
     @ApiOperation(value = "获取当前访客的点赞状态")
     @PostMapping("/getCurrentLikeStatus")
@@ -87,7 +107,7 @@ public class BlogViewController {
             Long blogLikes = blogInfoService.getById(blogId).getBlogLikes();
             blogLikesStatusDto.setBlogLikes(blogLikes);
             redisService.hSet(StringConstants.BLOG_LIKES_COUNT_PREFIX, countKey, blogLikes);
-        }else{
+        } else {
             blogLikesStatusDto.setBlogLikes(Long.valueOf(count));
         }
         return ResultGenerator.getResultByHttp(HttpStatusEnum.OK, blogLikesStatusDto);
@@ -95,7 +115,7 @@ public class BlogViewController {
 
     @ApiOperation(value = "点赞博客")
     @PostMapping("/likeBlog")
-    public Result likeBlog(Long blogId) {
+    public Result<String> likeBlog(Long blogId) {
         if (blogId == null) {
             return ResultGenerator.getResultByHttp(HttpStatusEnum.BAD_REQUEST);
         }
@@ -120,13 +140,13 @@ public class BlogViewController {
                 redisService.hSet(StringConstants.BLOG_LIKES_COUNT_PREFIX, countKey, count + increment);
             }
         }
-        return ResultGenerator.getResultByHttp(HttpStatusEnum.OK);
+        return ResultGenerator.getResultByHttp(HttpStatusEnum.OK, "点赞成功");
     }
 
     @ApiOperation(value = "分页条件查询博客列表")
     @Transactional(rollbackFor = {Exception.class})
     @PostMapping("/pageBlogView")
-    public Result<PageResult<BlogInfo>> pageBlogView(BlogViewRequest conditions) {
+    public Result<PageResult<BlogInfoResponseDto>> pageBlogView(BlogViewRequest conditions) {
         if (conditions == null || conditions.getPageNum() == null || conditions.getPageSize() == null) {
             return ResultGenerator.getResultByHttp(HttpStatusEnum.BAD_REQUEST);
         }
@@ -147,23 +167,50 @@ public class BlogViewController {
         }
         Page<BlogInfo> page = new Page<>(conditions.getPageNum(), conditions.getPageSize());
         blogInfoService.page(page, sqlQuery);
-        PageResult<BlogInfo> pageResult = new PageResult<>();
+        PageResult<BlogInfoResponseDto> pageResult = new PageResult<>();
         pageResult.setTotalSize(page.getTotal());
         if (Objects.isNull(page.getRecords())) {
             return ResultGenerator.getResultByHttp(HttpStatusEnum.INTERNAL_SERVER_ERROR);
         }
         List<BlogInfo> data = page.getRecords();
+        setPageDateBlogLikes(data);
+        pageResult.setData(setBlogCategoryIcon(data));
+        return ResultGenerator.getResultByHttp(HttpStatusEnum.OK, pageResult);
+    }
 
+    /**
+     * 对分页查询的数据添加分类Icon
+     *
+     * @param data
+     * @return
+     */
+    private List<BlogInfoResponseDto> setBlogCategoryIcon(List<BlogInfo> data) {
+        List<BlogInfoResponseDto> blogInfoResponseList = new ArrayList<>();
+        for (BlogInfo blogInfo : data) {
+            BlogInfoResponseDto blogInfoResponseDto = new BlogInfoResponseDto();
+            BeanUtils.copyProperties(blogInfo, blogInfoResponseDto);
+            blogInfoResponseList.add(blogInfoResponseDto);
+        }
+        blogInfoResponseList.forEach(blogInfoResponseDto -> {
+            blogInfoResponseDto.setCategoryIcon(blogCategoryService.getById(blogInfoResponseDto.getBlogCategoryId()).getCategoryIcon());
+        });
+        return blogInfoResponseList;
+    }
+
+    /**
+     * 对分页查询的数据添加点赞数据
+     *
+     * @param data
+     */
+    private void setPageDateBlogLikes(List<BlogInfo> data) {
         Map<Object, Object> map = redisService.hGetAll(StringConstants.BLOG_LIKES_COUNT_PREFIX);
-        if(!map.isEmpty()){
-            for(BlogInfo info: data) {
-                if(map.containsKey("" + info.getBlogId())){
-                    info.setBlogLikes(Long.valueOf((Integer)map.get("" + info.getBlogId())));
+        if (!map.isEmpty()) {
+            for (BlogInfo info : data) {
+                if (map.containsKey("" + info.getBlogId())) {
+                    info.setBlogLikes(Long.valueOf((Integer) map.get("" + info.getBlogId())));
                 }
             }
         }
-        pageResult.setData(data);
-        return ResultGenerator.getResultByHttp(HttpStatusEnum.OK, pageResult);
     }
 
     @ApiOperation(value = "获取博客详情")
@@ -199,4 +246,6 @@ public class BlogViewController {
         }
         return ResultGenerator.getResultByHttp(HttpStatusEnum.INTERNAL_SERVER_ERROR);
     }
+
+
 }

@@ -13,7 +13,9 @@
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-select v-model="blogInfo.blogTags" placeholder="请选择文章标签">
+
+          <el-select v-model="blogInfo.blogTags" multiple placeholder="请选择文章标签">
+
             <el-option
                 v-for="item in tagList"
                 :key="item.tagId"
@@ -112,7 +114,7 @@ export default {
       },
       tagList: [],
       categoryList: [],
-      tagId: '',
+      tagIds: [],
       loads: false,
       blogId: ''
     }
@@ -120,11 +122,12 @@ export default {
   created() {
     this.getBlogTag();
     this.getBlogCategory();
-    if (this.$route.query.blogId != null){
+    if (this.$route.query.blogId != null) {
       this.getBlogInfo();
     }
   },
   methods: {
+
     getBlogInfo() {
       this.blogId = this.$route.query.blogId;
       const _this = this;
@@ -145,18 +148,19 @@ export default {
         this.$refs.md.$img2Url(pos, res.data);
       })
 
-    /*  axios({
-        url: '/admin/uploadAuthorImg',
-        method: 'post',
-        data: formdata,
-        headers: {'Content-Type': 'multipart/form-data'},
-      }).then((res) => {
-        this.$refs.md.$img2Url(pos, res.data.data);
-      })*/
+      /*  axios({
+          url: '/admin/uploadAuthorImg',
+          method: 'post',
+          data: formdata,
+          headers: {'Content-Type': 'multipart/form-data'},
+        }).then((res) => {
+          this.$refs.md.$img2Url(pos, res.data.data);
+        })*/
     },
 
     getTagId(id) {
-      this.tagId = id;
+      this.tagIds.push(id);
+      console.info(this.tagIds);
     },
 
     getCategoryId(id) {
@@ -168,59 +172,61 @@ export default {
       this.blogInfo.blogStatus = this.blogInfo.blogStatus ? 1 : 0;
       this.blogInfo.enableComment = this.blogInfo.enableComment ? 1 : 0;
       const _this = this;
-      if(this.blogId == ''){
-      // 发布文章
-      saveBlog(qs.stringify({
-        tagId: this.tagId,
-        blogTitle: this.blogInfo.blogTitle,
-        blogSubUrl: this.blogInfo.blogSubUrl,
-        blogPreface: this.blogInfo.blogPreface,
-        blogContent: this.blogInfo.blogContent,
-        blogCategoryId: this.blogInfo.blogCategoryId,
-        blogCategoryName: this.blogInfo.blogCategoryName,
-        blogTags: this.blogInfo.blogTags,
-        blogStatus: this.blogInfo.blogStatus,
-        enableComment: this.blogInfo.enableComment
-      })).then(res => {
-        _this.loads = false;
-        if (res.code === 2000) {
+      if (this.blogId == '') {
+
+        // 发布文章
+        saveBlog(qs.stringify({
+              tagIds: this.tagIds,
+              blogTitle: this.blogInfo.blogTitle,
+              blogSubUrl: this.blogInfo.blogSubUrl,
+              blogPreface: this.blogInfo.blogPreface,
+              blogContent: this.blogInfo.blogContent,
+              blogCategoryId: this.blogInfo.blogCategoryId,
+              blogCategoryName: this.blogInfo.blogCategoryName,
+              blogTags: this.blogInfo.blogTags.toString(),
+              blogStatus: this.blogInfo.blogStatus,
+              enableComment: this.blogInfo.enableComment
+            })
+        ).then(res => {
           _this.loads = false;
-          this.$message({
-            message: '发布成功',
-            center: true,
-            type: 'success'
-          });
-        }
-      })
-      }else{
+          if (res.code === 2000) {
+            _this.loads = false;
+            this.$message({
+              message: '发布成功',
+              center: true,
+              type: 'success'
+            });
+          }
+        })
+      } else {
         // 修改文章
         editBlog(qs.stringify({
-        blogId: this.blogId,
-        tagId: this.tagId,
-        blogTitle: this.blogInfo.blogTitle,
-        blogSubUrl: this.blogInfo.blogSubUrl,
-        blogPreface: this.blogInfo.blogPreface,
-        blogContent: this.blogInfo.blogContent,
-        blogCategoryId: this.blogInfo.blogCategoryId,
-        blogCategoryName: this.blogInfo.blogCategoryName,
-        blogTags: this.blogInfo.blogTags,
-        blogStatus: this.blogInfo.blogStatus,
-        enableComment: this.blogInfo.enableComment
-      })).then(res => {
-        _this.loads = false;
-        if (res.code === 2000) {
+          blogId: this.blogId,
+          tagId: this.tagId,
+          blogTitle: this.blogInfo.blogTitle,
+          blogSubUrl: this.blogInfo.blogSubUrl,
+          blogPreface: this.blogInfo.blogPreface,
+          blogContent: this.blogInfo.blogContent,
+          blogCategoryId: this.blogInfo.blogCategoryId,
+          blogCategoryName: this.blogInfo.blogCategoryName,
+          blogTags: this.blogInfo.blogTags,
+          blogStatus: this.blogInfo.blogStatus,
+          enableComment: this.blogInfo.enableComment
+        })).then(res => {
           _this.loads = false;
-          this.$message({
-            message: '修改成功',
-            center: true,
-            type: 'success'
-          });
-          this.$router.push(
-          {
-            path: '/blogList',
-          })
-        }
-      })
+          if (res.code === 2000) {
+            _this.loads = false;
+            this.$message({
+              message: '修改成功',
+              center: true,
+              type: 'success'
+            });
+            this.$router.push(
+                {
+                  path: '/blogList',
+                })
+          }
+        })
       }
     },
 
@@ -239,36 +245,43 @@ export default {
 }
 </script>
 
-<style >
+<style>
 .el-container .el-header .el-row {
   margin-top: 10px;
 }
+
 /* switch按钮样式 */
 .switch .el-switch__label {
   position: absolute;
   display: none;
   color: #fff !important;
 }
+
 /*打开时文字位置设置*/
 .switch .el-switch__label--right {
   z-index: 1;
 }
+
 /* 调整打开时文字的显示位子 */
-.switch .el-switch__label--right span{
+.switch .el-switch__label--right span {
   margin-right: 9px;
 }
+
 /*关闭时文字位置设置*/
 .switch .el-switch__label--left {
   z-index: 1;
 }
+
 /* 调整关闭时文字的显示位子 */
-.switch .el-switch__label--left span{
+.switch .el-switch__label--left span {
   margin-left: 9px;
 }
+
 /*显示文字*/
 .switch .el-switch__label.is-active {
   display: block;
 }
+
 /* 调整按钮的宽度 */
 .switch.el-switch .el-switch__core,
 .el-switch .el-switch__label {

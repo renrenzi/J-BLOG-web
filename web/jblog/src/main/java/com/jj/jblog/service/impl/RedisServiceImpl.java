@@ -57,4 +57,14 @@ public class RedisServiceImpl implements RedisService {
     public void hDel(String key, Object ... keys) {
         redisTemplate.opsForHash().delete(key, keys);
     }
+
+    @Override
+    public void bitSet(String key, long value) {
+        redisTemplate.opsForValue().setBit(key, value, true);
+    }
+
+    @Override
+    public boolean getBit(String key, long value) {
+        return redisTemplate.opsForValue().getBit(key, value);
+    }
 }

@@ -23,12 +23,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * 后台用户管理
+ *
  * @author 张俊杰
  * @date 2021/11/20  - {TIME}
  */
@@ -84,15 +84,16 @@ public class AdminUserController {
 
     /**
      * 插入登录信息
-     * @param loginName 
+     *
+     * @param loginName
      */
-    private void insertLoginInfo(String loginName){
+    private void insertLoginInfo(String loginName) {
         LoginLog log = new LoginLog().setLoginIp(IpAdrressUtil.getIpAdrress(request))
-                                    .setLoginTime(DateUtils.getLocalCurrentTime())
-                                    .setLoginName(loginName);
+                .setLoginTime(DateUtils.getLocalCurrentTime())
+                .setLoginName(loginName);
         loginLogService.save(log);
     }
-    
+
     @ApiOperation(value = "登出")
     @GetMapping("/logOut")
     public Result logOut() {

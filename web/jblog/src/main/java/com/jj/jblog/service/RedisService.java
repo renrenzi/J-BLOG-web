@@ -49,6 +49,19 @@ public interface RedisService {
      */
     Map<Object, Object> hGetAll(String key);
 
+    /**
+     * 删除Hash结构里的多个Key
+     * @param key
+     * @param keys
+     */
     void hDel(String key, Object ... keys);
 
+    /**
+     * 向BitMap插入一条数据
+     * @param key
+     * @param value
+     */
+    void bitSet(String key, long value);
+
+    boolean getBit(String key, long value);
 }

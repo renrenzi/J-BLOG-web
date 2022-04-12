@@ -11,6 +11,7 @@ import com.jj.jblog.constant.HttpStatusEnum;
 import com.jj.jblog.constant.UploadConstants;
 import com.jj.jblog.dao.BlogInfoMapper;
 import com.jj.jblog.entity.BlogInfo;
+import com.jj.jblog.pojo.dto.BlogInfoRequestDto;
 import com.jj.jblog.service.BlogInfoService;
 import com.jj.jblog.util.DateUtils;
 import com.jj.jblog.util.FastDfsUtil;
@@ -31,6 +32,7 @@ import java.util.Map;
 
 /**
  * 博客详情管理
+ *
  * @author 张俊杰
  * @date 2021/11/5  - {TIME}
  */
@@ -87,12 +89,21 @@ public class BlogInfoController {
     }
 
     @ApiOperation(value = "保存文章内容")
-    @PostMapping("/saveBlog")
-    public Result<String> saveBlog(Integer tagId, BlogInfo blogInfo) {
-        if (StringUtils.isEmpty(tagId) || ObjectUtils.isEmpty(blogInfo)) {
+    @PostMapping("/saveBlog2")
+    public Result<String> saveBlogEdit(BlogInfoRequestDto blogInfoRequestDto) {
+        if (StringUtils.isEmpty(blogInfoRequestDto)) {
             return ResultGenerator.getResultByHttp(HttpStatusEnum.BAD_REQUEST);
         }
-        return blogInfoService.saveBlog(tagId, blogInfo);
+        return blogInfoService.saveBlog(blogInfoRequestDto.getTagIds(), blogInfoRequestDto);
+    }
+
+    @ApiOperation(value = "保存文章内容(该接口已失效)")
+    @PostMapping("/saveBlog")
+    public Result<String> saveBlog(@RequestParam(value = "tagIds") List<Integer> tagIds, BlogInfo blogInfo) {
+        if (StringUtils.isEmpty(tagIds) || ObjectUtils.isEmpty(blogInfo)) {
+            return ResultGenerator.getResultByHttp(HttpStatusEnum.BAD_REQUEST);
+        }
+        return blogInfoService.saveBlog(tagIds, blogInfo);
     }
 
     @ApiOperation(value = "分页查询文章列表")

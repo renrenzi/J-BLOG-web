@@ -17,18 +17,22 @@
             blogInfo.blogCategoryName
           }}</el-link>
 
-<!--          <div class="grid-content bg-purple">-->
-<!--            {{ blogInfo.createTime | moment }}-->
-<!--          </div>-->
+
         </el-col>
         <el-col :span="2" v-if="blogStatus == '' || blogStatus == null">
-<!--          <el-divider direction="vertical"></el-divider>-->
           <i class="el-icon-view">{{ blogInfo.blogViews }}</i> 浏览量
         </el-col>
       </el-row>
     </el-header>
     <el-main>
       <el-container>
+        <el-aside>
+          <el-tag
+              v-for="item in blogInfo.tagNames"
+              effect="dark">
+            {{ item }}
+          </el-tag>
+        </el-aside>
         <el-main style="width: 1000px; margin-left: 180px">
           <el-row>
             <mavon-editor
