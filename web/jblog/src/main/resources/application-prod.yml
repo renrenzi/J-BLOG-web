@@ -5,13 +5,13 @@ spring:
   datasource:
     driver-class-name: org.gjt.mm.mysql.Driver
     url: jdbc:mysql://120.39.217.37:3306/blog?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-    username: root
-    password: junjie2002
+    username: 你的账号
+    password: 你的密码
   redis:
     database: 0
-    host: 120.39.217.37
+    host: 你的redishost
     port: 6379
-    password: junjie2002
+    password: 你的Redis密码
 mybatis-plus:
   type-aliases-package: com.jj.jblog.entity
   mapper-locations: classpath*:mapper/*.xml
