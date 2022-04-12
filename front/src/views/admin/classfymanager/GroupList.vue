@@ -39,6 +39,43 @@
             排序值
             <el-input v-model="categoryRank"></el-input>
           </el-row>
+          <el-row>
+
+            <el-col :span="4">
+              分类图标
+              <el-avatar shape="square"
+                         v-if="categoryIcon"
+                         :size="80"
+                         :src="categoryIcon"
+                         fit="fill">
+
+              </el-avatar>
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-col>
+
+            <el-col :span="4" :offset="3">
+              <el-upload
+                  action="#"
+                  class="avatar-uploader"
+                  :show-file-list="false"
+                  :auto-upload="false"
+                  :on-change="uploadImg"
+                  :before-upload="beforeAvatarUpload"
+              >
+                <el-button type="primary">预览</el-button>
+              </el-upload>
+            </el-col>
+            <el-col :span="4" :offset="2">
+              <el-button type="primary"  :loading="loading"  @click="uploadAuthorImg">
+
+                <span v-if="!loading">开始上传</span>
+                <span v-else>上 传 中...</span>
+
+              </el-button>
+            </el-col>
+
+
+          </el-row>
           <span slot="footer" class="dialog-footer">
             <el-button @click="categoryDialog = false">取 消</el-button>
             <el-button type="primary" @click="addCategory">确 定</el-button>
@@ -83,17 +120,30 @@
         <el-table-column
             prop="categoryName"
             label="分类名"
-            width="268">
+            width="210">
         </el-table-column>
         <el-table-column
             prop="categoryRank"
             label="排序值"
-            width="268">
+            width="211">
+        </el-table-column>
+        <el-table-column
+            prop="address"
+            label="分类图标"
+            width="211"
+        >
+          <template slot-scope="scope">
+            <el-image
+                style="width: 30px; height: 30px"
+                :src="scope.row.categoryIcon"
+                fit="fill">
+            </el-image>
+          </template>
         </el-table-column>
         <el-table-column
             prop="address"
             label="当前状态"
-            width="268"
+            width="211"
         >
           <template slot-scope="scope">
             <el-switch
@@ -111,7 +161,7 @@
             prop="name"
             label="操作"
             show-overflow-tooltip
-            width="268">
+            width="211">
           <template slot-scope="scope">
             <el-button type="primary"
                        circle
@@ -148,7 +198,7 @@ import {
   pageCategory,
   updateCategoryStatus
 } from "../../../api/blogmanager/blogCategory";
-import {clearTag} from "../../../api/blogmanager/blogTag";
+import {uploadFileByFastDFS} from "../../../api/blogmanager/blog";
 
 export default {
   name: "GroupList",
@@ -157,6 +207,7 @@ export default {
       categoryId: '',
       categoryName: '',
       categoryRank: '',
+      categoryIcon: 'http://120.39.217.37:2234/group1/M00/00/00/rB8AYWJUKz2AbqXZAAfLnOwKEG0943.jpg',
       editCategoryDialog: false,
       categoryDialog: false,
       fullscreenLoading: false,
@@ -169,18 +220,53 @@ export default {
       },
       totalSize: 10,
       currentPage: 1,
+      file: {},
+      loading: false
     }
   },
   created() {
     this.handleCurrentChange(1);
   },
   methods: {
+
+    uploadImg(file) {
+      this.file = file;
+      this.categoryIcon = URL.createObjectURL(file.raw);
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+      this.categoryIcon = URL.createObjectURL(file.raw);
+      return isJPG && isLt2M;
+    },
+    // 上传分类Icon
+    uploadAuthorImg(){
+      const _this = this;
+      this.loading = true;
+      const formdata = new FormData();
+      formdata.append('file',this.file.raw);
+      uploadFileByFastDFS(formdata).then(res => {
+        if (res.code === 2000){
+          _this.categoryIcon = res.data;
+        }else {
+          this.$message.error('上传分类Icon失败');
+        }
+        _this.loading = false;
+      })
+    },
     updateCategory() {
       const _this = this;
       updateCategoryStatus(qs.stringify({
         categoryId: this.categoryId,
         categoryName: this.categoryName,
         categoryRank: this.categoryRank,
+        categoryIcon: this.categoryIcon
       })).then(res => {
         if (res.code === 2000) {
           _this.editCategoryDialog = false;
@@ -233,7 +319,8 @@ export default {
       const _this = this;
       addCategory(qs.stringify({
         categoryName: this.categoryName,
-        categoryRank: this.categoryRank
+        categoryRank: this.categoryRank,
+        categoryIcon: this.categoryIcon
       })).then(res => {
         if (res.code == 2000) {
           _this.categoryName = '';

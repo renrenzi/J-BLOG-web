@@ -16,14 +16,17 @@ import com.jj.jblog.dao.BlogTagRelationMapper;
 import com.jj.jblog.entity.BlogComment;
 import com.jj.jblog.entity.BlogInfo;
 import com.jj.jblog.entity.BlogTagRelation;
+import com.jj.jblog.pojo.dto.BlogInfoRequestDto;
 import com.jj.jblog.service.BlogInfoService;
 import com.jj.jblog.util.DateUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -31,7 +34,7 @@ import java.util.List;
  * @date 2021/11/9  - {TIME}
  */
 @Service
-public class BlogInfoServiceImpl extends ServiceImpl<BlogInfoMapper,BlogInfo> implements BlogInfoService {
+public class BlogInfoServiceImpl extends ServiceImpl<BlogInfoMapper, BlogInfo> implements BlogInfoService {
     @Resource
     private BlogInfoMapper blogInfoMapper;
     @Resource
@@ -39,17 +42,47 @@ public class BlogInfoServiceImpl extends ServiceImpl<BlogInfoMapper,BlogInfo> im
     @Resource
     private BlogCommentMapper blogCommentMapper;
 
+
     @Override
-    public Result<String> saveBlog(Integer tagIdList, BlogInfo blogInfo) {
+    public Result<String> saveBlog2(List<Integer> tagIds, BlogInfoRequestDto blogInfoRequestDto) {
+        BlogInfo blogInfo = null;
+        BeanUtils.copyProperties(blogInfoRequestDto, blogInfo);
         blogInfo.setCreateTime(DateUtils.getLocalCurrentTime());
         blogInfo.setUpdateTime(DateUtils.getLocalCurrentTime());
-
+        blogInfo.setBlogLikes(0L);
         if (blogInfoMapper.insert(blogInfo) > 0) {
             // 创建文章标签关系列表
-            List<BlogTagRelation> list = new ArrayList() {{
-                add(new BlogTagRelation().setBlogId(blogInfo.getBlogId())
-                        .setTagId(tagIdList));
-            }};
+            List<BlogTagRelation> list = new ArrayList<>();
+            for (Integer tagId : tagIds) {
+                list.add(new BlogTagRelation().setBlogId(blogInfo.getBlogId())
+                        .setTagId(tagId));
+            }
+
+            // 删除已存在的关系
+            blogTagRelationMapper.delete(new QueryWrapper<BlogTagRelation>()
+                    .lambda()
+                    .eq(BlogTagRelation::getBlogId, blogInfo.getBlogId()));
+            for (BlogTagRelation item : list) {
+                blogTagRelationMapper.insert(item);
+            }
+            return ResultGenerator.getResultByHttp(HttpStatusEnum.OK);
+        }
+        return ResultGenerator.getResultByHttp(HttpStatusEnum.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public Result<String> saveBlog(List<Integer> tagIds, BlogInfo blogInfo) {
+
+        blogInfo.setCreateTime(DateUtils.getLocalCurrentTime());
+        blogInfo.setUpdateTime(DateUtils.getLocalCurrentTime());
+        blogInfo.setBlogLikes(0L);
+        if (blogInfoMapper.insert(blogInfo) > 0) {
+            // 创建文章标签关系列表
+            List<BlogTagRelation> list = new ArrayList<>();
+            for (Integer tagId : tagIds) {
+                list.add(new BlogTagRelation().setBlogId(blogInfo.getBlogId())
+                        .setTagId(tagId));
+            }
             // 删除已存在的关系
             blogTagRelationMapper.delete(new QueryWrapper<BlogTagRelation>()
                     .lambda()

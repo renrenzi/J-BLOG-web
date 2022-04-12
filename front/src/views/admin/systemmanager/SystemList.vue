@@ -188,7 +188,8 @@ export default {
         linkUrl: '',
         linkDescription: '',
         linkRank: '',
-        linkType: ''
+        linkType: '',
+        linkId: ''
       }
     }
   },
@@ -254,7 +255,8 @@ export default {
         linkUrl: this.link.linkUrl,
         linkDescription: this.link.linkDescription,
         linkRank: this.link.linkRank,
-        linkType: this.link.linkType
+        linkType: this.link.linkType,
+        linkId: this.link.linkId
       })).then(res => {
         if (res.code == 2000) {
           _this.linkDialog = false;

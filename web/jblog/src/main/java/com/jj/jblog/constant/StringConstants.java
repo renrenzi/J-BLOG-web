@@ -17,5 +17,18 @@ public class StringConstants {
      */
     public static final String BLOG_VIEWS_PREFIX = "blogViews";
 
+    /**
+     *  博客点赞量前缀
+     */
+    public static final String BLOG_LIKES_PREFIX = "blogLikes";
 
+    /**
+     *  博客点赞总量前缀
+     */
+    public static final String BLOG_LIKES_COUNT_PREFIX = "blogLikeCount";
+
+    /**
+     *  用户日活访问Key
+     */
+    public static final String BLOG_USER_VISIT_KEY = "blogUserVisit";
 }

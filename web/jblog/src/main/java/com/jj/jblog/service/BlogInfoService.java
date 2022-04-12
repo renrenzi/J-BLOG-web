@@ -5,6 +5,7 @@ import com.jj.jblog.basic.PageCondition;
 import com.jj.jblog.basic.PageResult;
 import com.jj.jblog.basic.Result;
 import com.jj.jblog.entity.BlogInfo;
+import com.jj.jblog.pojo.dto.BlogInfoRequestDto;
 
 import java.util.List;
 
@@ -13,14 +14,20 @@ import java.util.List;
  * @date 2021/11/5  - {TIME}
  */
 public interface BlogInfoService extends IService<BlogInfo> {
-
     /**
      * 保存文章内容
-     * @param tagIdList
+     * @param tagIds
      * @param blogInfo
      * @return com.jj.jblog.basic.Result
      */
-    Result<String> saveBlog(Integer tagIdList,  BlogInfo blogInfo);
+    Result<String> saveBlog2(List<Integer> tagIds,  BlogInfoRequestDto blogInfoRequestDto);
+    /**
+     * 保存文章内容
+     * @param tagIds
+     * @param blogInfo
+     * @return com.jj.jblog.basic.Result
+     */
+    Result<String> saveBlog(List<Integer> tagIds,  BlogInfo blogInfo);
 
     /**
      *  分页文章列表

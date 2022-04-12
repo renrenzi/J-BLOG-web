@@ -7,11 +7,11 @@ spring:
   datasource:
     driver-class-name: org.gjt.mm.mysql.Driver
     url: jdbc:mysql://127.0.0.1:3306/blog?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-    username: MySQL账号
-    password: MySQL密码
+    username: root
+    password: 你的Mysql密码
   redis:
     database: 0
-    host: 你的Redishost
+    host: 你的RedisIp
     port: 6379
     password: 你的Redis密码
 mybatis-plus:

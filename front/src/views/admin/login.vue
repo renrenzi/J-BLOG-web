@@ -2,7 +2,7 @@
   <div class="login">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
       <h3 class="title">博客后台管理系统</h3>
-      <el-form-item prop="username">
+      <el-form-item prop="username" >
         <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
           <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon"/>
         </el-input>
@@ -36,8 +36,11 @@
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <span>Copyright © 2021-2021 RenRenZi All Rights Reserved.</span>
+      <span>Copyright © 2021-2022 RenRenZi All Rights Reserved.</span>
+      <el-link href="https://beian.miit.gov.cn/#/Integrated/recordQuery">闽ICP备2022003846号</el-link>
+    Powered by <el-link href="#" target="_blank">任人子</el-link>
     </div>
+
   </div>
 </template>
 
@@ -53,8 +56,8 @@ export default {
       codeUrl: "",
       cookiePassword: "",
       loginForm: {
-        username: "admin",
-        password: "000000",
+        username: "",
+        password: "",
         rememberMe: false,
         code: "",
         uuid: ""
@@ -66,7 +69,6 @@ export default {
         password: [
           {required: true, trigger: "blur", message: "请输入您的密码"}
         ],
-        code: [{required: true, trigger: "change", message: "请输入验证码"}]
       },
       loading: false,
       // 验证码开关
@@ -81,6 +83,7 @@ export default {
   },
   methods: {
     login() {
+
       this.loading = true;
       const _this = this;
       login(qs.stringify({
@@ -88,10 +91,16 @@ export default {
         loginPassword: this.loginForm.password
       })).then(res => {
         if (res.code === 2000) {
-          _this.loading = false;
           _this.$store.state.adminUser = res.data.adminUser;
           _this.$store.state.imgUrl = res.data.imgUrl;
+          _this.$store.state.token = res.data.token;
           _this.$router.push({path: '/adminHome'})
+        }else{
+          this.$message({
+          type: 'error',
+          message: '账户名或密码错误'
+        });
+          _this.loading = false;
         }
       })
     }
@@ -106,7 +115,7 @@ export default {
   align-items: center;
   height: 625px;
   width: 100%;
-  background-image: url("../../assets/img/carousel1.png");
+  background-image: url("http://120.39.217.37:2234/group1/M00/00/00/rB8AYWI9vm-AD_vUAAFoAcumkJ4421.png");
   background-size: cover;
 }
 

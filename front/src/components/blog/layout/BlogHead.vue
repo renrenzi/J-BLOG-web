@@ -2,8 +2,8 @@
   <div>
     <el-row style="margin-top: 0px">
       <el-carousel height="320px" direction="vertical" :autoplay="false">
-        <el-carousel-item v-for="img in imgCarousel" :key="img">
-          <el-image :src="img" fit="fill" :preview-src-list="srcList"></el-image>
+        <el-carousel-item >
+          <el-image :src="imgUrl" fit="fill" ></el-image>
         </el-carousel-item>
       </el-carousel>
     </el-row>
@@ -35,12 +35,7 @@ export default {
   name: "BlogHead",
   data() {
     return {
-      imgCarousel: {
-        image1: require('../../../assets/img/carousel1.png')
-      },
-      srcList: [
-        require('../../../assets/img/carousel1.png')
-      ]
+      imgUrl: "http://120.39.217.37:2234/group1/M00/00/00/rB8AYWI9vm-AD_vUAAFoAcumkJ4421.png"
     };
   }
 }
