@@ -13,7 +13,7 @@ spring:
     database: 0
     host: 你的RedisIp
     port: 6379
-    password: 你的Redis密码
+    password: test
 mybatis-plus:
   type-aliases-package: com.jj.jblog.entity
   mapper-locations: classpath*:mapper/*.xml
