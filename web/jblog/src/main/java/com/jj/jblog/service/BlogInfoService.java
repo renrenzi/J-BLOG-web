@@ -17,7 +17,7 @@ public interface BlogInfoService extends IService<BlogInfo> {
     /**
      * 保存文章内容
      * @param tagIds
-     * @param blogInfo
+     * @param blogInfoRequestDto
      * @return com.jj.jblog.basic.Result
      */
     Result<String> saveBlog2(List<Integer> tagIds,  BlogInfoRequestDto blogInfoRequestDto);
