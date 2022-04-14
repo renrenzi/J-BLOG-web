@@ -31,7 +31,12 @@ public class UploadConstants {
      */
     public static  String SQL_FILE_DIC = "/upload/";
 
-    public static String UPLOAD_IMG_IP = "http://120.39.217.37:2234/";
+    /**
+     * 切换 Https://域名 访问
+     */
+    public static String UPLOAD_IMG_IP = "https://renrenzi.top/imgs/";
+
+    //public static String UPLOAD_IMG_IP = "http://120.39.217.37:2234/";
 
     @Value("upload.uploadAuthorImg")
     public static void setUploadAuthorImg(String uploadAuthorImg) {

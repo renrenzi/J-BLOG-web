@@ -15,7 +15,7 @@ export default new Vuex.Store({
         },
         token: '',
         imgUrl: '',
-        userUrl: 'http://120.39.217.37:2234/group1/M00/00/00/rB8AYWJUOduASibLAAAarki5D1k853.png'
+        userUrl: 'https://renrenzi.top/imgs/group1/M00/00/00/rB8AYWJUOduASibLAAAarki5D1k853.png'
     },
     mutations: {
         adminUser: function (state, adminUser) {

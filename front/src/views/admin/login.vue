@@ -115,7 +115,7 @@ export default {
   align-items: center;
   height: 625px;
   width: 100%;
-  background-image: url("http://120.39.217.37:2234/group1/M00/00/00/rB8AYWI9vm-AD_vUAAFoAcumkJ4421.png");
+  background-image: url("https://renrenzi.top/imgs/group1/M00/00/00/rB8AYWI9vm-AD_vUAAFoAcumkJ4421.png");
   background-size: cover;
 }
 
