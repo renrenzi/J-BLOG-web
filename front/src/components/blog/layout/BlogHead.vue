@@ -35,7 +35,7 @@ export default {
   name: "BlogHead",
   data() {
     return {
-      imgUrl: "https://renrenzi.top/imgs/group1/M00/00/00/rB8AYWI9vm-AD_vUAAFoAcumkJ4421.png"
+      imgUrl: this.$store.state.loginBackgroundImage
     };
   }
 }
