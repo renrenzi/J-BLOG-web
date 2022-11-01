@@ -1,6 +1,5 @@
-package com.jj.jblog.controller.blog;
+package com.jj.jblog.controller.admin;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.jj.jblog.basic.PageCondition;
 import com.jj.jblog.basic.PageResult;
 import com.jj.jblog.basic.Result;
@@ -11,10 +10,13 @@ import com.jj.jblog.dao.BlogCommentMapper;
 import com.jj.jblog.entity.BlogComment;
 import com.jj.jblog.service.BlogCommentService;
 import com.jj.jblog.service.RedisService;
-import com.jj.jblog.util.DateUtils;
-import com.jj.jblog.util.IpAdrressUtil;
+import com.jj.jblog.util.SensitiveUtil;
+import com.jj.jblog.utils.DateUtils;
+import com.jj.jblog.utils.IpAdrressUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +26,11 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * 博客评论管理
- * @author 张俊杰
+ * @author 任人子
  * @date 2021/11/14  - {TIME}
  */
 @Api(tags = "blogCommentController", description = "博客评论管理")
-@RequestMapping("comment")
+@RequestMapping("/blog/comment")
 @RestController
 public class BlogCommentController {
 
@@ -40,6 +42,14 @@ public class BlogCommentController {
     private RedisService redisService;
     @Resource
     private HttpServletRequest request;
+    @Resource
+    private SensitiveUtil sensitiveUtil;
+    @Resource
+    private AmqpTemplate amqpTemplate;
+    @Value("${spring.rabbitmq.ExchangeName}")
+    private String exchange;
+    @Value("${spring.rabbitmq.RoutingKey}")
+    private String routingKey;
 
     @ApiOperation(value = "发布评论")
     @PostMapping("/createComment")
@@ -50,6 +60,7 @@ public class BlogCommentController {
             return ResultGenerator.getResultByMsg(HttpStatusEnum.BAD_GATEWAY, "30秒内评论过, 请稍后评论");
         }
         redisService.set(key, requestIp);
+        blogComment.setCommentBody(sensitiveUtil.filter(blogComment.getCommentBody()));
         // 设置超时30s
         redisService.expire(key, 30);
         blogComment.setCommentatorIp(requestIp)
@@ -59,6 +70,8 @@ public class BlogCommentController {
                 .setIsDeleted(0)
                 .setCommentStatus(0);
 
+        // 向消息队列发送评论消息
+        amqpTemplate.convertAndSend(exchange, routingKey, blogComment);
         if (blogCommentMapper.insert(blogComment) > 0) {
             return ResultGenerator.getResultByHttp(HttpStatusEnum.OK);
         }
