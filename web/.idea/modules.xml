@@ -3,7 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/J-BLOG.iml" filepath="$PROJECT_DIR$/J-BLOG.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jblog/jblog.iml" filepath="$PROJECT_DIR$/jblog/jblog.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jblog-common/jblog-common.iml" filepath="$PROJECT_DIR$/jblog-common/jblog-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jblog-core/jblog-core.iml" filepath="$PROJECT_DIR$/jblog-core/jblog-core.iml" />
     </modules>
   </component>
 </project>

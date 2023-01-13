@@ -7,12 +7,15 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="jblog" />
+        <module name="jblog-core" />
+        <module name="jblog-common" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="J-BLOG" target="1.8" />
       <module name="jblog" target="1.8" />
+      <module name="jblog-common" target="1.8" />
+      <module name="jblog-core" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

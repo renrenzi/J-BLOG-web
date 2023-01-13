@@ -100,7 +100,7 @@
   <component name="RebelAgentSelection">
     <selection>jr</selection>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Spring Boot.JenBlogMain">
     <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
@@ -108,6 +108,13 @@
         </value>
       </option>
       <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="JenBlogMain (1)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="jblog-core" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.jj.jblog.JenBlogMain" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
